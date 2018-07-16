@@ -44,12 +44,7 @@ public:
   void RegisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler, const std::set<std::string> &extensions);
   void UnregisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler);
   bool HasLanguageInvoker(const std::string &script) const;
-  LanguageInvokerPtr GetLanguageInvoker(const std::string &script);
-
-  /*!
-  * \brief Returns addon_handle if last reusable invoker is ready to use.
-  */
-  int GetReusablePluginHandle(const std::string &script);
+  LanguageInvokerPtr GetLanguageInvoker(const std::string &script) const;
 
   /*!
    * \brief Executes the given script asynchronously in a separate thread.
@@ -59,11 +54,7 @@ public:
    * \param arguments (Optional) List of arguments passed to the script
    * \return -1 if an error occurred, otherwise the ID of the script
    */
-  int ExecuteAsync(const std::string &script,
-    const ADDON::AddonPtr &addon = ADDON::AddonPtr(),
-    const std::vector<std::string> &arguments = std::vector<std::string>(),
-    bool reuseable = false,
-    int pluginHandle = -1);
+  int ExecuteAsync(const std::string &script, const ADDON::AddonPtr &addon = ADDON::AddonPtr(), const std::vector<std::string> &arguments = std::vector<std::string>());
   /*!
   * \brief Executes the given script asynchronously in a separate thread.
   *
@@ -73,12 +64,7 @@ public:
   * \param arguments (Optional) List of arguments passed to the script
   * \return -1 if an error occurred, otherwise the ID of the script
   */
-  int ExecuteAsync(const std::string &script,
-    LanguageInvokerPtr languageInvoker,
-    const ADDON::AddonPtr &addon = ADDON::AddonPtr(),
-    const std::vector<std::string> &arguments = std::vector<std::string>(),
-    bool reuseable = false,
-    int pluginHandle = -1);
+  int ExecuteAsync(const std::string &script, LanguageInvokerPtr languageInvoker, const ADDON::AddonPtr &addon = ADDON::AddonPtr(), const std::vector<std::string> &arguments = std::vector<std::string>());
 
   /*!
   * \brief Executes the given script synchronously.
@@ -96,11 +82,7 @@ public:
   * \param waitShutdown (Optional) Whether to wait when having to forcefully stop the script's execution or not.
   * \return -1 if an error occurred, 0 if the script terminated or ETIMEDOUT if the given timeout expired
   */
-  int ExecuteSync(const std::string &script,
-    const ADDON::AddonPtr &addon = ADDON::AddonPtr(),
-    const std::vector<std::string> &arguments = std::vector<std::string>(),
-    uint32_t timeoutMs = 0,
-    bool waitShutdown = false);
+  int ExecuteSync(const std::string &script, const ADDON::AddonPtr &addon = ADDON::AddonPtr(), const std::vector<std::string> &arguments = std::vector<std::string>(), uint32_t timeoutMs = 0, bool waitShutdown = false);
   /*!
   * \brief Executes the given script synchronously.
   *
@@ -118,12 +100,7 @@ public:
   * \param waitShutdown (Optional) Whether to wait when having to forcefully stop the script's execution or not.
   * \return -1 if an error occurred, 0 if the script terminated or ETIMEDOUT if the given timeout expired
   */
-  int ExecuteSync(const std::string &script,
-    LanguageInvokerPtr languageInvoker,
-    const ADDON::AddonPtr &addon = ADDON::AddonPtr(),
-    const std::vector<std::string> &arguments = std::vector<std::string>(),
-    uint32_t timeoutMs = 0,
-    bool waitShutdown = false);
+  int ExecuteSync(const std::string &script, LanguageInvokerPtr languageInvoker, const ADDON::AddonPtr &addon = ADDON::AddonPtr(), const std::vector<std::string> &arguments = std::vector<std::string>(), uint32_t timeoutMs = 0, bool waitShutdown = false);
   bool Stop(int scriptId, bool wait = false);
   bool Stop(const std::string &scriptPath, bool wait = false);
 
@@ -133,7 +110,7 @@ public:
 protected:
   friend class CLanguageInvokerThread;
 
-  void OnExecutionDone(int scriptId);
+  void OnScriptEnded(int scriptId);
 
 private:
   CScriptInvocationManager() = default;
@@ -153,9 +130,6 @@ private:
 
   LanguageInvocationHandlerMap m_invocationHandlers;
   LanguageInvokerThreadMap m_scripts;
-  CLanguageInvokerThreadPtr m_lastInvokerThread;
-  int m_lastPluginHandle;
-
   std::map<std::string, int> m_scriptPaths;
   int m_nextId = 0;
   mutable CCriticalSection m_critSection;

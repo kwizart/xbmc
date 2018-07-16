@@ -34,8 +34,7 @@ typedef enum {
   InvokerStateInitialized,
   InvokerStateRunning,
   InvokerStateStopping,
-  InvokerStateScriptDone,
-  InvokerStateExecutionDone,
+  InvokerStateDone,
   InvokerStateFailed
 } InvokerState;
 
@@ -56,7 +55,6 @@ public:
   InvokerState GetState() const { return m_state; }
   bool IsActive() const;
   bool IsRunning() const;
-  void Reset() { m_state = InvokerStateUninitialized; };
 
 protected:
   friend class CLanguageInvokerThread;
