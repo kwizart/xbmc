@@ -56,6 +56,7 @@ endif()
 if(ARCH MATCHES arm)
   list(APPEND SOURCES yuv2rgb.neon.S)
   list(APPEND HEADERS yuv2rgb.neon.h)
+  set_source_files_properties(yuv2rgb.neon.S PROPERTIES COMPILE_OPTIONS -mfpu=neon)
 endif()
 
 core_add_library(videorenderers)
