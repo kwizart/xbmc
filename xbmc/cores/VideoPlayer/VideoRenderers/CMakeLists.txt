@@ -53,4 +53,12 @@ if(OPENGLES_FOUND AND (CORE_PLATFORM_NAME_LC STREQUAL android OR
                       FrameBufferObject.cpp)
 endif()
 
+if(ARCH MATCHES arm AND ENABLE_NEON)
+  list(APPEND SOURCES yuv2rgb.neon.S)
+  list(APPEND HEADERS yuv2rgb.neon.h)
+  if(NOT DEFINED NEON_FLAGS)
+    set_source_files_properties(yuv2rgb.neon.S PROPERTIES COMPILE_OPTIONS -mfpu=neon)
+  endif()
+endif()
+
 core_add_library(videorenderers)
