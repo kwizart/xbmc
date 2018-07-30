@@ -129,6 +129,11 @@ void CMatrixGL::Rotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 }
 
 #if defined(HAS_NEON) && !defined(__LP64__)
+// This function requires neon fpu
+#if defined(__GNUC__)
+  #pragma GCC push_options
+  #pragma GCC target("fpu=neon")
+#endif
 
 static inline void Matrix4Mul(float* src_mat_1, const float* src_mat_2)
 {
@@ -168,6 +173,9 @@ static inline void Matrix4Mul(float* src_mat_1, const float* src_mat_2)
     : "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10", "q11" //clobber
     );
 }
+#if defined(__GNUC__)
+  #pragma GCC pop_options
+#endif
 #endif
 void CMatrixGL::MultMatrixf(const CMatrixGL &matrix) noexcept
 {
