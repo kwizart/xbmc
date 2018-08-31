@@ -83,3 +83,7 @@ private:
 extern CMatrixGLStack glMatrixModview;
 extern CMatrixGLStack glMatrixProject;
 extern CMatrixGLStack glMatrixTexture;
+
+#if defined(HAS_NEON) && !defined(__LP64__)
+void Matrix4Mul(float* src_mat_1, const float* src_mat_2);
+#endif
